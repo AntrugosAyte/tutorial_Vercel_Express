@@ -9,10 +9,15 @@ app.use(bodyParser.json());
 
 let dataCache = [];
 
+// Ruta raíz
+app.get("/", (req, res) => {
+  res.send("Bienvenido a la API");
+});
+
 app.get("/fetch-and-store", async (req, res) => {
   try {
     const response = await axios.get(
-      "https://awss3express-7fqwprty1-anderson-burgos-projects.vercel.app/"
+      "https://projectvercelexpress-4clr7yyw9-anderson-burgos-projects.vercel.app/"
     );
     dataCache = response.data;
 
