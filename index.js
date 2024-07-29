@@ -1,11 +1,8 @@
 const express = require("express");
 const axios = require("axios");
-const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
 
 let dataCache = [];
 
@@ -14,31 +11,18 @@ app.get("/", (req, res) => {
   res.send("Bienvenido a la API");
 });
 
+// Endpoint para obtener y almacenar datos
 app.get("/fetch-and-store", async (req, res) => {
   try {
-    const response = await axios.get(
-      "https://projectvercelexpress-4clr7yyw9-anderson-burgos-projects.vercel.app/"
-    );
-    dataCache = response.data;
-
-    // Almacena los datos en memoria
-    dataCache.push(newData);
-
-    res.send("Datos obtenidos y almacenados en memoria");
+    const response = await axios.get("URL_DE_TU_API");
+    dataCache.push(response.data);
+    res.status(200).send("Datos obtenidos y almacenados correctamente");
   } catch (error) {
-    console.error(error);
     res.status(500).send("Error al obtener los datos");
   }
 });
 
-// Almacenamiento manual de datos
-app.get("/get-data", (req, res) => {
-  const newData = req.body;
-
-  newData ? dataCache.push(newData) : res.status(404).send("Datos invalidos");
-});
-
-// Obtener datos almacenados
+// Endpoint para obtener datos almacenados
 app.get("/get-data", (req, res) => {
   if (dataCache.length > 0) {
     res.json(dataCache);
@@ -47,6 +31,17 @@ app.get("/get-data", (req, res) => {
   }
 });
 
-app.listen(() => {
-  console.log(`servidor http://localhost:${port}`);
+// Endpoint para agregar datos manualmente
+app.post("/add-data", express.json(), (req, res) => {
+  const newData = req.body;
+  if (newData) {
+    dataCache.push(newData);
+    res.status(200).send("Datos agregados correctamente");
+  } else {
+    res.status(400).send("Datos inválidos");
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
 });
